@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Spirala Ulama</title>
+</head>
+<body >
+    
+    <canvas id="canvas" width="2000" height="2000">
+    </canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+
+        const directions = {
+            LEFT: {
+                x: -1,
+                y: 0
+            },
+            RIGHT: {
+                x: 1,
+                y: 0
+            },
+            DOWN: {
+                x: 0,
+                y: -1
+            },
+            UP: {
+                x: 0,
+                y: 1
+            }
+        };
+
+        if(canvas.getContext) {
+            const c = canvas.getContext('2d');
+
+
+            const size = (window.innerHeight > window.innerWidth) ? 
+                window.innerHeight : window.innerWidth;
+
+            c.width = size;
+            c.height = size;
+
+            const brush = {
+                x: size/2,
+                y: size/2
+            }
+            const allNumbers = size * size;
+            let direction = directions.RIGHT, lastDirection = 'right';
+            let currentNumber = 1;
+            let movesInGivenDirection = 1;
+
+            let linesDrawn = 0;
+            const interval = setInterval(() => {
+                for (let i = movesInGivenDirection; i > 0; i--) {
+                    if (isPrime(currentNumber)) {
+                        drawPixelAt(brush.x, brush.y, c);
+                    }
+
+                    brush.x += direction.x;
+                    brush.y += direction.y;
+                    currentNumber++;
+                }
+
+
+                if (lastDirection == 'right') {
+                    direction = directions.UP;
+                    lastDirection = 'up';
+                } else if (lastDirection == 'up') {
+                    direction = directions.LEFT;
+                    lastDirection = 'left';
+                } else if (lastDirection == 'left') {
+                    direction = directions.DOWN;
+                    lastDirection = 'down';
+                } else if (lastDirection == 'down') {
+                    direction = directions.RIGHT;
+                    lastDirection = 'right';
+                }
+
+                linesDrawn++;
+                if (linesDrawn % 2 == 0 && linesDrawn != 0) {
+                    linesDrawn = 0;
+                    movesInGivenDirection++;
+                }
+
+                if (currentNumber >= allNumbers) clearInterval(interval);
+                 
+            }, 30);  
+        }
+
+        function drawPixelAt(posX, posY, c) {
+            c.fillRect(posX, posY, 1, 1);
+        }
+
+        function isPrime(number) {
+            const num = parseInt(number);
+            if(num < 2) return false;
+                for (var i = 2; i < num; i++) {
+                    if(num % i == 0)
+                        return false;
+                }
+            return true;
+        }
+    </script>
+</body>
+</html>
